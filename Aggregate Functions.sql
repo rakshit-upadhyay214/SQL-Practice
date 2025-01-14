@@ -39,3 +39,38 @@ select officeCode, city, postalCode, count(officeCode) as emp_count
                 group by officeCode
                 having count(*)<3;
                 
+-- Example-1 Total Payments from each customer after a certain date
+select customerNumber, count(*) as payment_count 
+				from payments 
+                where paymentDate > "2004-12-31"
+                group by customerNumber;
+                
+-- Example-2 Value of each unique order sorted by total order values
+select o.orderNumber, 
+				sum(od.quantityOrdered*od.priceEach) as total_cost
+                from orders o 
+                join orderdetails od 
+                using (orderNumber) 
+                group by o.orderNumber
+                order by total_cost desc;
+
+-- select orderNumber, sum(quantityOrdered) as number_of_products, sum(priceEach) as total_ammount from orderdetails where orderNumber=10100;
+
+-- Example-3 Country wise count of orders--
+select country, o.orderDate, count(o.orderNumber) as order_count 
+				from orders as o 
+                left join customers as c 
+                using (customerNumber) 
+                group by c.country, o.orderDate
+                order by c.country asc;
+
+-- Example-4 Orders under each sales person-
+select c.salesRepEmployeeNumber, e.firstName, count(orderNumber) as order_count
+				from orders o left join 
+				customers as c
+				using(customerNumber)
+				left join employees e
+				on c.salesRepEmployeeNumber = e.employeeNumber
+				group by salesRepEmployeeNumber
+				order by order_count desc;
+
