@@ -17,3 +17,14 @@ select * from customers where customerNumber in (
 -- converting it into correlated query using EXISTS keyword
 select * from customers c where EXISTS (
 				select customerNumber from payments where customerNumber= c.customerNumber);
+
+-- Writing subQuery in SELECT statement; 
+select *, (select avg(amount) from payments) as avg_amount, amount- (select avg_amount) as difference_from_avg from payments;
+
+-- Writing subQuery in FROM clause; 
+select * from (select *, 
+				(select avg(amount) from payments) as avg_amount, 
+                amount- (select avg_amount) as difference_from_avg 
+                from payments) as invoice_summary 
+		where difference_from_avg>0 ;
+
